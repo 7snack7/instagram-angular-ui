@@ -51,7 +51,7 @@ export class LoginComponent implements OnInit {
         this.router.navigate(['/']);
       },
       error: error => {
-        console.log(error);
+        console.log(error.message);
         this.notificationService.showSnackBar(error.message);
       }
     });
