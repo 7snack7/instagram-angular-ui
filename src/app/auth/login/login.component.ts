@@ -13,8 +13,7 @@ import {NotificationService} from '../../service/notification.service';
 })
 export class LoginComponent implements OnInit {
 
-  // @ts-ignore
-  public loginForm: FormGroup;
+  public loginForm!: FormGroup;
 
   constructor(private authService: AuthService,
               private tokenStorage: TokenStorageService,
@@ -22,7 +21,7 @@ export class LoginComponent implements OnInit {
               private router: Router,
               private fb: FormBuilder) {
     if (this.tokenStorage.getUser()) {
-      this.router.navigate(['/']);
+      this.router.navigate(['/main']);
     }
   }
 
@@ -41,18 +40,20 @@ export class LoginComponent implements OnInit {
     this.authService.login({
       username: this.loginForm.value.username,
       password: this.loginForm.value.password,
-    }).subscribe(data => {
-      console.log(data);
+    }).subscribe({
+      next: data => {
+        console.log(data);
 
-      this.tokenStorage.saveToken(data.token);
-      this.tokenStorage.saveUser(data);
+        this.tokenStorage.saveToken(data.token);
+        this.tokenStorage.saveUser(data);
 
-      this.notificationService.showSnackBar('Successfully logged in');
-      this.router.navigate(['/']);
-      window.location.reload();
-    }, error => {
+        this.notificationService.showSnackBar('Successfully logged in');
+        this.router.navigate(['/']);
+      },
+      error: error => {
         console.log(error);
         this.notificationService.showSnackBar(error.message);
+      }
     });
   }
 }
