@@ -16,13 +16,8 @@ export class RegisterComponent implements OnInit {
   public registerForm!: FormGroup;
 
   constructor(private authService: AuthService,
-              private tokenStorage: TokenStorageService,
               private notificationService: NotificationService,
-              private router: Router,
               private fb: FormBuilder) {
-    if (this.tokenStorage.getUser()) {
-      this.router.navigate(['/main']);
-    }
   }
 
   ngOnInit(): void {
@@ -31,7 +26,7 @@ export class RegisterComponent implements OnInit {
 
   createRegisterForm(): FormGroup {
     return this.fb.group({
-      email: ['', Validators.compose([Validators.required])],
+      email: ['', Validators.compose([Validators.required, Validators.email])],
       username: ['', Validators.compose([Validators.required])],
       firstname: ['', Validators.compose([Validators.required])],
       lastname: ['', Validators.compose([Validators.required])],
@@ -41,6 +36,7 @@ export class RegisterComponent implements OnInit {
   }
 
   submit(): void {
+    console.log(this.registerForm.value);
     this.authService.register({
       email: this.registerForm.value.email,
       username: this.registerForm.value.username,
@@ -50,12 +46,10 @@ export class RegisterComponent implements OnInit {
       confirmPassword: this.registerForm.value.confirmPassword
     }).subscribe({
       next: data => {
-        console.log(data);
-        this.router.navigate(['/']);
+        this.notificationService.showSnackBar('Successfully registered!');
       },
       error: error => {
-        console.log(error.message);
-        this.notificationService.showSnackBar(error.message);
+        this.notificationService.showSnackBar('Failed to register!');
       }
     })
   }
