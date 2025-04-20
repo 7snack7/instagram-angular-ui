@@ -26,7 +26,7 @@ export class PostService {
   }
 
   delete(postId: number): Observable<any> {
-    return this.http.post(POST_API + postId + 'delete', null);
+    return this.http.post(POST_API + postId + '/delete', null);
   }
 
   likePost(postId: number, username: string): Observable<any> {

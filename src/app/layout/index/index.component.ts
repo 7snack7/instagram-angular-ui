@@ -30,7 +30,6 @@ export class IndexComponent implements OnInit {
   ngOnInit() {
     this.postService.getAllPosts().subscribe({
       next: data => {
-        console.log(data);
         this.posts = data;
         this.getImageToPosts(this.posts);
         this.getCommentsToPosts(this.posts);
@@ -43,7 +42,6 @@ export class IndexComponent implements OnInit {
 
     this.userService.getCurrentUser().subscribe({
       next: data => {
-        console.log(data);
         this.user = data;
         this.isUserDataLoaded = true;
       },
@@ -75,20 +73,19 @@ export class IndexComponent implements OnInit {
 
   likePost(postId: number, postIndex: number): void {
     const post = this.posts[postIndex];
-    console.log(post);
-    if (!post.userLiked?.includes(this.user.username)) {
+    if (!post.usersLikes?.includes(this.user.username)) {
       this.postService.likePost(postId, this.user.username).subscribe({
         next: () => {
-          post.userLiked?.push(this.user.username);
+          post.usersLikes?.push(this.user.username);
           this.notificationService.showSnackBar('Liked!')
         }
       });
     } else {
       this.postService.likePost(postId, this.user.username).subscribe({
         next: () => {
-          const index = post.userLiked?.indexOf(this.user.username, 0);
+          const index = post.usersLikes?.indexOf(this.user.username, 0);
           if (index! >= 0) {
-            post.userLiked?.splice(index!, 1);
+            post.usersLikes?.splice(index!, 1);
           }
         }
       });
@@ -100,7 +97,6 @@ export class IndexComponent implements OnInit {
     console.log(post);
     this.commentService.addCommentToPost(postId, message).subscribe({
       next: data => {
-        console.log(data);
         post.comments?.push(data);
       }
     });
